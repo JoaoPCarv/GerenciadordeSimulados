@@ -4,62 +4,109 @@ import javax.swing.JOptionPane;
 
 import br.com.JoaoPCarv.GerenciadordeSimulados.checker.Checker;
 import br.com.JoaoPCarv.GerenciadordeSimulados.enums.ModelsEnum;
-import br.com.JoaoPCarv.GerenciadordeSimulados.enums.UserStatusEnum;
+import br.com.JoaoPCarv.GerenciadordeSimulados.enums.ObjectStatusEnum;
+import br.com.JoaoPCarv.GerenciadordeSimulados.exceptions.ExistingSimuladoException;
 import br.com.JoaoPCarv.GerenciadordeSimulados.exceptions.ExistingUserException;
 import br.com.JoaoPCarv.GerenciadordeSimulados.exceptions.WrongArgumentException;
 import br.com.JoaoPCarv.GerenciadordeSimulados.interfaces.Recordable;
 import br.com.JoaoPCarv.GerenciadordeSimulados.model.Administrador;
+import br.com.JoaoPCarv.GerenciadordeSimulados.model.Simulado;
 
 public abstract class RecordableFactory {
 
-	public static Recordable getRecordable(String[] params) throws ExistingUserException, WrongArgumentException {
+	public static Recordable getRecordable(String[] params)
+			throws ExistingUserException, WrongArgumentException, ExistingSimuladoException {
 
-		if (Checker.checkLogin(params) && params[1].equals(UserStatusEnum.NEW.getName()))
+		boolean loginable = params[0].equals("Administrador") || params[0].equals("Estudante");
+
+		if (loginable && Checker.checkLogin(params) && params[1].equals(ObjectStatusEnum.NEW.getName()))
 			throw new ExistingUserException();
-		
-		else if(Checker.checkLogin(params) && params[1].equals(UserStatusEnum.EXISTING.getName()) &&
-				!Checker.checkPassword(params)) 
+
+		if (loginable && Checker.checkLogin(params) && params[1].equals(ObjectStatusEnum.EXISTING.getName())
+				&& !Checker.checkPassword(params))
 			throw new WrongArgumentException("Senha errada.");
 
-		else {
+		if (loginable && !Checker.checkLogin(params) && params[1].equals(ObjectStatusEnum.EXISTING.getName()))
+			throw new WrongArgumentException("Usuário não existente.");
 
-			switch (params[0]) {
+		if (params[0].equals("Simulado") && Checker.checkName(params)
+				&& params[1].equals(ObjectStatusEnum.NEW.getName()))
+			throw new ExistingSimuladoException();
 
-			case "Administrador":
+		if (params[0].equals("Simulado") && !Checker.checkName(params)
+				&& params[1].equals(ObjectStatusEnum.EXISTING.getName()))
+			throw new WrongArgumentException("Simulado não existente.");
 
-				if(params[1].equals(UserStatusEnum.NEW.getName())) {
-					
-					try {
-						return new Administrador(params[2], IDFactory.generateID(params[3]), params[4]);
-					} catch (WrongArgumentException e) {
-						JOptionPane.showMessageDialog(null, e.getMessage());
-					}
-					
-				} else {
-					
-					int ID = IDFactory.recoverID(ModelsEnum.ADMIN.getPath(), params[2]);
-					return new Administrador(ID);
+		switch (params[0]) {
+
+		case "Administrador": {
+
+			if (params[1].equals(ObjectStatusEnum.NEW.getName())) {
+
+				try {
+					return new Administrador(params[2], IDFactory.generateID(params[3]), params[4]);
+				} catch (WrongArgumentException e) {
+					JOptionPane.showMessageDialog(null, e.getMessage());
+				}
+
+			} else {
+
+				int ID = IDFactory.recoverID(ModelsEnum.ADMIN.getPath(), params[2]);
+				return new Administrador(ID);
+			}
+		}
+		
+		case "Estudante": {}
+		
+		case "Simulado": {
+			
+			if(params[1].equals(ObjectStatusEnum.NEW.getName())) {
+				
+				try {
+					return new Simulado(params[2], IDFactory.generateID(params[3]), params[4], 
+							Integer.parseInt(params[5]), Integer.parseInt(params[6]), null);
+				} catch (WrongArgumentException e) {
+					JOptionPane.showMessageDialog(null, e.getMessage());
 				}
 				
-
+			} else {
+				
+				int ID = IDFactory.recoverID(ModelsEnum.SIMULADO.getPath(), params[2]);
+				return new Simulado(ID);
+				
 			}
-
-			return null;
+		}
 
 		}
+
+		return null;
+
 	}
 
 	public static Recordable getRecordable(String type, int ID) {
 
 		switch (type) {
 
-		case "Administrador":
-
+		case "Administrador":{
+			
 			try {
 				return new Administrador(ID);
 			} catch (WrongArgumentException e) {
 				JOptionPane.showMessageDialog(null, e.getMessage());
 			}
+			
+		}
+		
+		case "Estudante":{}
+		
+		case "Simulado":{
+			
+			try {
+				return new Simulado(ID);
+			} catch (WrongArgumentException e) {
+				JOptionPane.showMessageDialog(null, e.getMessage());
+			}
+		}
 
 		}
 

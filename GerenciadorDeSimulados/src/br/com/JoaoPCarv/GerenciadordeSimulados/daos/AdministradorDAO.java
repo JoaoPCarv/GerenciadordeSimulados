@@ -34,7 +34,7 @@ public class AdministradorDAO implements DAO {
 			Connection con = ConnectionFactory.getConnection();
 
 			PreparedStatement stmt = con.prepareStatement(
-					"Insert into Administrador" + "(adm_login, adm_ID, adm_senha, adm_path) values (?,?,?,?)");
+					"Insert into Administrador (adm_login, adm_ID, adm_senha, adm_path) values (?,?,?,?)");
 
 			stmt.setString(1, adm.getAdm_login());
 			stmt.setString(2, Integer.toString(adm.getAdm_ID()));
@@ -69,14 +69,14 @@ public class AdministradorDAO implements DAO {
 
 		try {
 			Connection con = ConnectionFactory.getConnection();
-			
+
 			PreparedStatement stmt = con.prepareStatement("Delete from Administrador where adm_ID=?");
 			stmt.setString(1, Integer.toString(adm.getAdm_ID()));
 			result = stmt.execute();
 			stmt.close();
-			
+
 			return result;
-			
+
 		} catch (Exception e) {
 
 			JOptionPane.showMessageDialog(null, e.getMessage());
@@ -86,62 +86,60 @@ public class AdministradorDAO implements DAO {
 	}
 
 	@Override
-	public Recordable selectFromID(int ID) throws WrongArgumentException{
-	
+	public Recordable selectFromID(int ID) throws WrongArgumentException {
+
 		try {
-			
+
 			Connection con = ConnectionFactory.getConnection();
-			
+
 			PreparedStatement stmt = con.prepareStatement("Select * from Administrador where adm_ID=?");
 			stmt.setString(1, Integer.toString(ID));
 			stmt.execute();
-			
+
 			ResultSet rs = stmt.getResultSet();
-			
-			if(rs.next()) {
-				
-				return new Administrador(rs.getString("adm_login"), 
-						Integer.parseInt(rs.getString("adm_ID")),
+
+			if (rs.next()) {
+
+				return new Administrador(rs.getString("adm_login"), Integer.parseInt(rs.getString("adm_ID")),
 						rs.getString("adm_senha"));
-				
+
 			} else {
-				
+
 				throw new WrongArgumentException("Não existe administrador com ID " + ID + ".");
 			}
-			
-			
-		} catch(Exception e) {
-			
+
+		} catch (Exception e) {
+
 			JOptionPane.showMessageDialog(null, e.getMessage());
 		}
-		
+
 		return null;
 	}
 
 	@Override
 	public List<Recordable> selectAll() {
-		
+
 		List<Recordable> lista = new ArrayList<>();
-		
-try {
-			
+
+		try {
+
 			Connection con = ConnectionFactory.getConnection();
-			
+
 			PreparedStatement stmt = con.prepareStatement("Select * from Administrador;");
 			stmt.execute();
-			
+
 			ResultSet rs = stmt.getResultSet();
-			
-			while(rs.next()) {
-				
+
+			while (rs.next()) {
+
 				lista.add(new Administrador(Integer.parseInt(rs.getString("adm_ID"))));
-			}			
-			
-		} catch(Exception e) {
-			
+			}
+
+		} catch (Exception e) {
+
 			JOptionPane.showMessageDialog(null, e.getMessage());
 		}
-		
+
 		return lista;
 	}
 

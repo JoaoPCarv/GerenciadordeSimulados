@@ -5,5 +5,9 @@ package br.com.JoaoPCarv.GerenciadordeSimulados.interfaces;
 public interface Recordable {
 	
 	public boolean recordThisOnTxt();
+	
+	public String getPath();
+	
+	public void show();
 
 }

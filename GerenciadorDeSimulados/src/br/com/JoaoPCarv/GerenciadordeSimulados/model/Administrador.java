@@ -10,6 +10,7 @@ import java.io.FileWriter;
 
 import javax.swing.JOptionPane;
 
+import br.com.JoaoPCarv.GerenciadordeSimulados.enums.ModelsEnum;
 import br.com.JoaoPCarv.GerenciadordeSimulados.exceptions.WrongArgumentException;
 import br.com.JoaoPCarv.GerenciadordeSimulados.interfaces.Recordable;
 
@@ -38,11 +39,10 @@ public class Administrador implements Recordable {
 		this.adm_senha = adm_senha;
 	}
 	
+	@Override
 	public String getPath() {
 		
-		return "C:\\Users\\Administrador.000\\.eclipse\\GerenciadorDeSimulados"
-				+ "\\src\\br\\com\\JoaoPCarv\\GerenciadordeSimulados\\admins\\"
-				+ "ADM" + Integer.toString(this.getAdm_ID()) + ".txt";
+		return ModelsEnum.ADMIN.getPath() + Integer.toString(this.getAdm_ID()) + ".txt";
 	}
 	
 	@Override
@@ -72,13 +72,13 @@ public class Administrador implements Recordable {
 	public Administrador(String adm_login, int adm_ID, String adm_senha) throws WrongArgumentException{
 		
 		String message = "";
-		boolean error = adm_login.length() == 0 || adm_ID < 0 || adm_senha.length() != 8;
+		boolean error = adm_login.length() == 0 || adm_ID <= 0 || adm_senha.length() != 8;
 		
 		if(adm_login.length() == 0) {
 			message += "O login não pode ser nulo. \n ";
 		}
 		if(adm_ID < 0) {
-			message += "O ID de administrador não pode ser negativo. \n";
+			message += "O ID de administrador deve ser positivo. \n";
 		}
 		if(adm_senha.length() != 8) {
 			message += "A senha deve conter 8 caracteres.";
@@ -94,12 +94,13 @@ public class Administrador implements Recordable {
 		
 	}
 	
-	public Administrador(int adm_ID)  throws WrongArgumentException{
+	public Administrador(int adm_ID)  throws WrongArgumentException {
 		
 		if(adm_ID < 0) {
 			
 			throw new WrongArgumentException("O ID de administrador não pode ser negativo.");
 		}
+		
 		this.setAdm_ID(adm_ID);
 		String path = this.getPath();
 				
@@ -126,6 +127,7 @@ public class Administrador implements Recordable {
 		
 	};
 	
+	@Override
 	public void show() {
 		
 		System.out.println("Login: " + this.getAdm_login() + "; ID: " + this.getAdm_ID() + "; senha: " + this.getAdm_senha());

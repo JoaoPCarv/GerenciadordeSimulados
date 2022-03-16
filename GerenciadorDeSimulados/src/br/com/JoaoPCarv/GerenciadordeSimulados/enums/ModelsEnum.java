@@ -2,7 +2,7 @@ package br.com.JoaoPCarv.GerenciadordeSimulados.enums;
 
 public enum ModelsEnum {
 
-	ADMIN, STUDENT;
+	ADMIN, STUDENT, SIMULADO;
 
 	public int getParamNumber() {
 
@@ -13,6 +13,9 @@ public enum ModelsEnum {
 
 		case STUDENT:
 			return 0;
+			
+		case SIMULADO:
+			return 6;
 
 		}
 
@@ -29,7 +32,12 @@ public enum ModelsEnum {
 					+ "\\src\\br\\com\\JoaoPCarv\\GerenciadordeSimulados\\admins\\ADM";
 
 		case STUDENT:
-			return "";
+			return "C:\\Users\\Administrador.000\\.eclipse\\GerenciadorDeSimulados"
+					+ "\\src\\br\\com\\JoaoPCarv\\GerenciadordeSimulados\\students\\STU";
+			
+		case SIMULADO:
+			return "C:\\Users\\Administrador.000\\.eclipse\\GerenciadorDeSimulados"
+					+ "\\src\\br\\com\\JoaoPCarv\\GerenciadordeSimulados\\sims\\SIM";
 
 		}
 
@@ -45,6 +53,9 @@ public enum ModelsEnum {
 
 		case STUDENT:
 			return "Estudante";
+			
+		case SIMULADO:
+			return "Simulado";
 
 		}
 

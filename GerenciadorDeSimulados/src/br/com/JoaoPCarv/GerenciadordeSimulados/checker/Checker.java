@@ -102,4 +102,41 @@ public abstract class Checker {
 
 	}
 
+	// Este método checa se o nome (de simulados, etc) é repetido.
+	public static boolean checkName(String[] params) {
+
+		try {
+			Connection con = ConnectionFactory.getConnection();
+						
+			String table = null;
+			String column = null;
+			
+			switch(params[0]) {
+			
+			case "Simulado":
+				
+				table = "Simulado";
+				column = "sim_nome";
+				
+			
+			}
+			
+			String sql = "Select * from " + table + " where " + column + " = '" + params[2] + "'";
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.execute();
+			ResultSet rs = stmt.getResultSet();
+			
+			if (rs.next())
+				return true;
+			else
+				return false;
+			
+
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());
+		}
+
+		return false;
+	}
+
 }
